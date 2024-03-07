@@ -11,11 +11,16 @@ public class Product implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "product_name", length = 100)
     private String name;
 
+    @Column(name = "product_description", length = 500)
     private String description;
 
     private double price;
+
+    public Product() {
+    }
 
     public Product(Long id, String name, String description, double price) {
         this.id = id;
