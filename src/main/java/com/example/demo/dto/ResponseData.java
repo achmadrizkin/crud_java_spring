@@ -5,6 +5,16 @@ public class ResponseData<T> {
     private T payload;
     private String message;
 
+    public ResponseData() {
+
+    }
+
+    public ResponseData(int statusCode, T payload, String message) {
+        this.statusCode = statusCode;
+        this.payload = payload;
+        this.message = message;
+    }
+
     public int getStatusCode() {
         return statusCode;
     }

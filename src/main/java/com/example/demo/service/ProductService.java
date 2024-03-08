@@ -27,7 +27,7 @@ public class ProductService {
             responseData.setStatusCode(400);
             responseData.setPayload(null);
             responseData.setMessage("name, description, and price cannot be empty");
-            return ResponseEntity.status(HttpStatus.OK).body(responseData);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         }
 
         try {
@@ -55,7 +55,7 @@ public class ProductService {
         if (id == null || id <= 0) {
             responseData.setStatusCode(400);
             responseData.setPayload(null);
-            responseData.setMessage("Id cannot be null or must be int");
+            responseData.setMessage("Id cannot be null or must > 0");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
         }
 
