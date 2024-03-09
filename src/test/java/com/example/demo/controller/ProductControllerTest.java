@@ -140,4 +140,32 @@ class ProductControllerTest {
         assertEquals(expectedResponse, actualResponse);
     }
 
+    @Test
+    void testFindByProductName() {
+        // Mock data
+        String productName = "testProduct";
+
+        // Arrange
+        Product product1 = new Product(1L, "Product 1", "Description 1", 300);
+        Product product2 = new Product(2L, "Product 2", "Description 2", 150);
+        List<Product> productList = Arrays.asList(product1, product2);
+
+        ResponseData<Object> responseData = new ResponseData<>();
+        responseData.setStatusCode(200);
+        responseData.setPayload(productList);
+        responseData.setMessage("Get data product is success !");
+
+        int expectedStatusCode = HttpStatus.OK.value();
+
+        ResponseEntity<ResponseData<Iterable<Product>>> expectedResponse = new ResponseEntity<>(new ResponseData<>(expectedStatusCode, productList, null), HttpStatus.OK);
+
+        // Stubbing the findAll method of productService
+        when(productService.findByProductName(productName)).thenReturn(expectedResponse);
+
+        // Act
+        ResponseEntity<ResponseData<Iterable<Product>>> actualResponse = productController.findByProductName(productName);
+
+        // Assert
+        assertEquals(expectedResponse, actualResponse);
+    }
 }

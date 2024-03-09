@@ -32,6 +32,11 @@ public class ProductController {
         return productService.findById(id);
     }
 
+    @GetMapping("/name/{name}")
+    public ResponseEntity<ResponseData<Iterable<Product>>> findByProductName(@PathVariable("name") String name) {
+        return productService.findByProductName(name);
+    }
+
     @PutMapping
     public ResponseEntity<ResponseData<Product>> update(@RequestBody Product product) {
         return productService.save(product);

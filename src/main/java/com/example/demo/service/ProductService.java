@@ -121,7 +121,14 @@ public class ProductService {
         return ResponseEntity.status(HttpStatus.OK).body(responseData);
     }
 
-    public List<Product> findByName(String name) {
-        return productRepo.findByNameContains(name);
+    public ResponseEntity<ResponseData<Iterable<Product>>> findByProductName(String name) {
+        ResponseData<Iterable<Product>> responseData = new ResponseData<>();
+
+        Iterable<Product> product = productRepo.findByProductName(name);
+        responseData.setStatusCode(200);
+        responseData.setPayload(product);
+        responseData.setMessage("Get data product is success !");
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseData);
     }
 }
