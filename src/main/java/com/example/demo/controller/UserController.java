@@ -20,4 +20,9 @@ public class UserController {
     public ResponseEntity<ResponseDataLogin<User>> register(@RequestBody User user) {
         return userService.save(user);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseDataLogin<User>> login(@RequestBody User user) {
+        return userService.login(user);
+    }
 }
