@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.dto.ResponseDataLogin;
+import com.example.demo.helpers.Hash;
 import com.example.demo.helpers.Jwt;
 import com.example.demo.model.entity.User;
 import com.example.demo.model.repository.UserRepo;
@@ -34,6 +35,10 @@ public class UserService {
         }
 
         try {
+            // Hash the password before saving
+            String hashedPassword = Hash.hashPassword(user.getPassword());
+            user.setPassword(hashedPassword);
+
             User savedUser = userRepo.save(user);
 
             String token = jwt.generateToken(savedUser.getEmail());
@@ -69,9 +74,12 @@ public class UserService {
             // Retrieve user from the database based on the email
             Optional<User> optionalUser = userRepo.findByEmail(user.getEmail());
 
+            // Hash the password before saving
+            String hashedPassword = Hash.hashPassword(user.getPassword());
+
             if (optionalUser.isPresent()) {
                 User savedUser = optionalUser.get();
-                if (savedUser.getPassword().equals(user.getPassword())) {
+                if (savedUser.getPassword().equals(hashedPassword)) {
                     // Passwords match, generate token and send response
                     String token = jwt.generateToken(savedUser.getEmail());
 
