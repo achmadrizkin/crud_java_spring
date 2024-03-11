@@ -20,7 +20,6 @@ public class Hash {
         } catch (NoSuchAlgorithmException e) {
             // Handle exception
             e.printStackTrace();
-
             return null;
         }
     }

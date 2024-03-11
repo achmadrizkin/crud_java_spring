@@ -35,20 +35,33 @@ public class UserService {
         }
 
         try {
-            // Hash the password before saving
-            String hashedPassword = Hash.hashPassword(user.getPassword());
-            user.setPassword(hashedPassword);
+            // check if email already avaiable or not
+            Optional<User> optionalUser = userRepo.findByEmail(user.getEmail());
 
-            User savedUser = userRepo.save(user);
+            if (optionalUser.isPresent()) {
+                responseDataLogin.setStatusCode(400);
+                responseDataLogin.setPayload(null);
+                responseDataLogin.setToken(null);
+                responseDataLogin.setMessage("email already created!");
 
-            String token = jwt.generateToken(savedUser.getEmail());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseDataLogin);
+            } else {
+                // Hash the password before saving
+                String hashedPassword = Hash.hashPassword(user.getPassword());
+                user.setPassword(hashedPassword);
 
-            responseDataLogin.setStatusCode(200);
-            responseDataLogin.setPayload(savedUser);
-            responseDataLogin.setToken(token);
-            responseDataLogin.setMessage("User registered successfully!");
+                User savedUser = userRepo.save(user);
 
-            return ResponseEntity.status(HttpStatus.OK).body(responseDataLogin);
+                String token = jwt.generateToken(savedUser.getEmail());
+
+                responseDataLogin.setStatusCode(200);
+                responseDataLogin.setPayload(savedUser);
+                responseDataLogin.setToken(token);
+                responseDataLogin.setMessage("User registered successfully!");
+
+                return ResponseEntity.status(HttpStatus.OK).body(responseDataLogin);
+            }
+
         } catch (DataAccessException e) {
             responseDataLogin.setStatusCode(500);
             responseDataLogin.setMessage("Error occurred while inserting or updating user data");

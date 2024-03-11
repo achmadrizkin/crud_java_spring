@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import com.example.demo.dto.ResponseData;
+import com.example.demo.helpers.Jwt;
 import com.example.demo.model.entity.Product;
 import com.example.demo.model.repository.ProductRepo;
 import jakarta.transaction.Transactional;
@@ -8,9 +10,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.example.demo.dto.ResponseData;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -20,8 +20,25 @@ public class ProductService {
     @Autowired // <-- this is like dependency injection
     private ProductRepo productRepo;
 
-    public ResponseEntity<ResponseData<Product>> save(Product product) {
+    @Autowired
+    private Jwt jwt; // Inject Jwt bean here
+
+    public ResponseEntity<ResponseData<Product>> save(String token, Product product) {
         ResponseData<Product> responseData = new ResponseData<>();
+
+        if (token.isEmpty()) {
+            responseData.setStatusCode(400);
+            responseData.setPayload(null);
+            responseData.setMessage("token cannot be null or must > 0");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
+        }
+
+        if (!jwt.validateToken(token)) {
+            responseData.setStatusCode(401);
+            responseData.setPayload(null);
+            responseData.setMessage("token invalid");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseData);
+        }
 
         if (product.getName().isEmpty() || product.getDescription().isEmpty() || product.getPrice() <= 0) {
             responseData.setStatusCode(400);
@@ -49,8 +66,22 @@ public class ProductService {
         }
     }
 
-    public ResponseEntity<ResponseData<Product>> findById(Long id) {
+    public ResponseEntity<ResponseData<Product>> findById(String token, Long id) {
         ResponseData<Product> responseData = new ResponseData<>();
+
+        if (token.isEmpty()) {
+            responseData.setStatusCode(400);
+            responseData.setPayload(null);
+            responseData.setMessage("token cannot be null or must > 0");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
+        }
+
+        if (!jwt.validateToken(token)) {
+            responseData.setStatusCode(401);
+            responseData.setPayload(null);
+            responseData.setMessage("token invalid");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseData);
+        }
 
         if (id == null || id <= 0) {
             responseData.setStatusCode(400);
@@ -73,8 +104,22 @@ public class ProductService {
         return ResponseEntity.status(HttpStatus.OK).body(responseData);
     }
 
-    public ResponseEntity<ResponseData<Iterable<Product>>> findAll() {
+    public ResponseEntity<ResponseData<Iterable<Product>>> findAll(String token) {
         ResponseData<Iterable<Product>> responseData = new ResponseData<>();
+
+        if (token.isEmpty()) {
+            responseData.setStatusCode(400);
+            responseData.setPayload(null);
+            responseData.setMessage("token cannot be null or must > 0");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
+        }
+
+        if (!jwt.validateToken(token)) {
+            responseData.setStatusCode(401);
+            responseData.setPayload(null);
+            responseData.setMessage("token invalid");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseData);
+        }
 
         try {
             Iterable<Product> savedProduct = productRepo.findAll();
@@ -95,8 +140,22 @@ public class ProductService {
         }
     }
 
-    public ResponseEntity<ResponseData<Object>> deleteById(Long id) {
+    public ResponseEntity<ResponseData<Object>> deleteById(String token, Long id) {
         ResponseData<Object> responseData = new ResponseData<>();
+
+        if (token.isEmpty()) {
+            responseData.setStatusCode(400);
+            responseData.setPayload(null);
+            responseData.setMessage("token cannot be null or must > 0");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
+        }
+
+        if (!jwt.validateToken(token)) {
+            responseData.setStatusCode(401);
+            responseData.setPayload(null);
+            responseData.setMessage("token invalid");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseData);
+        }
 
         if (id == null || id <= 0) {
             responseData.setStatusCode(400);
@@ -121,8 +180,22 @@ public class ProductService {
         return ResponseEntity.status(HttpStatus.OK).body(responseData);
     }
 
-    public ResponseEntity<ResponseData<Iterable<Product>>> findByProductName(String name) {
+    public ResponseEntity<ResponseData<Iterable<Product>>> findByProductName(String token, String name) {
         ResponseData<Iterable<Product>> responseData = new ResponseData<>();
+
+        if (token.isEmpty()) {
+            responseData.setStatusCode(400);
+            responseData.setPayload(null);
+            responseData.setMessage("token cannot be null or must > 0");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseData);
+        }
+
+        if (!jwt.validateToken(token)) {
+            responseData.setStatusCode(401);
+            responseData.setPayload(null);
+            responseData.setMessage("token invalid");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseData);
+        }
 
         Iterable<Product> product = productRepo.findByProductName(name);
         responseData.setStatusCode(200);
